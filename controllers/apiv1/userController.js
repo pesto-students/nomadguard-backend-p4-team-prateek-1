@@ -64,7 +64,6 @@ const generateToken = (id) => {
 // @route   POST /api/users/login
 // @access  Public
 exports.loginUser = asyncHandler(async (req, res) => {
-
   const { email, password } = req.body;
   // Check for user email
   const user = await User.findOne({ email });
