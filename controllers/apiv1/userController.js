@@ -70,7 +70,17 @@ exports.loginUser = asyncHandler(async (req, res) => {
   console.log(user)
 
   if (user && (await bcrypt.compare(password, user.password))) {
-    res.status(201).json({ ...user, token: generateToken(user._id) });
+    res.status(201).json({ 
+      _id: user.id,
+      name: user.firstName + ' ' + user.lastName,
+      token: generateToken(user._id),
+      password : user.password,
+      email: user.email,
+      homeCountry: user.homeCountry,
+      city: user.city,
+      state: user.state,
+      createdAt: user.createdAt
+    });
   } else {
     res.status(400);
     throw new Error('Invalid credentials');
@@ -106,4 +116,13 @@ exports.generateOTP = asyncHandler(async (req, res) => {
     }
   });
 
+});
+
+
+// @desc    Get user data
+// @route   GET /api/users/me
+// @access  Private
+exports.getMe = asyncHandler(async (req, res) => {
+  console.log(req.user)
+  res.status(200).json(req.user);
 });

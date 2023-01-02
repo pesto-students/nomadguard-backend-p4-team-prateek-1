@@ -1,3 +1,4 @@
+process.env.NODE_ENV = 'production';
 const express = require('express');
 const dotenv = require('dotenv').config();
 const cors = require('cors');
@@ -5,6 +6,11 @@ const port = process.env.PORT || 8080;
 const connectDB = require('./config/db');
 const path = require('path');
 const app = express();
+
+// cron
+// console.log("devvvvv")
+// const cron_jobs = require("./cron_job");
+// cron_jobs.startJobs();
 
 //database connect
 connectDB();

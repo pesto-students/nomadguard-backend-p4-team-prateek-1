@@ -29,7 +29,7 @@ const userSchema = mongoose.Schema(
     joiningDate: {
       type: Date,
     },
-    dateOfBirth: {
+    dob: {
       type: Date,
     },
     passChanged: { type: Boolean, default: false },
@@ -42,7 +42,7 @@ const userSchema = mongoose.Schema(
     state: {
       type: String,
     },
-    country: {
+    homeCountry: {
       type: String,
     },
     otp: {
