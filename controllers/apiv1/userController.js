@@ -70,11 +70,11 @@ exports.loginUser = asyncHandler(async (req, res) => {
   console.log(user)
 
   if (user && (await bcrypt.compare(password, user.password))) {
-    res.status(201).json({ 
+    res.status(201).json({
       _id: user.id,
       name: user.firstName + ' ' + user.lastName,
       token: generateToken(user._id),
-      password : user.password,
+      password: user.password,
       email: user.email,
       homeCountry: user.homeCountry,
       city: user.city,
@@ -125,4 +125,18 @@ exports.generateOTP = asyncHandler(async (req, res) => {
 exports.getMe = asyncHandler(async (req, res) => {
   console.log(req.user)
   res.status(200).json(req.user);
+});
+
+
+exports.updateProfile = asyncHandler(async (req, res) => {
+
+  const userId = req.headers['user-id'];
+  console.log(userId)
+  User.updateOne({ _id: userId }, { $set: req.body }, (errUpdate, resultUpdate) => {
+    if (errUpdate) {
+      return res.status(500);
+    } else {
+      return res.status(200);
+    }
+  });
 });

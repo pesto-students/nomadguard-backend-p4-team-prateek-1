@@ -6,6 +6,7 @@ const { protect } = require("../../middleware/authMiddleware");
 
 router.post("/register", user_controller.registerUser);
 router.post("/login", user_controller.loginUser);
+router.post("/updateProfile", user_controller.updateProfile);
 
 router.post("/generateOTP", user_controller.generateOTP);
 router.get("/me", protect, user_controller.getMe);

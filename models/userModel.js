@@ -45,10 +45,13 @@ const userSchema = mongoose.Schema(
     homeCountry: {
       type: String,
     },
+    citizenship: {
+      type: String,
+    },
     otp: {
       type: String,
     },
-    pincode: {
+    zipCode: {
       type: String,
     },
   },
