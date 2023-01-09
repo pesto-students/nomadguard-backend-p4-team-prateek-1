@@ -2,6 +2,10 @@ const asyncHandler = require('express-async-handler');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../../models/userModel');
+const CountryModel = require('../../models/countryModel');
+const InsuranceModel = require('../../models/insuranceModel');
+
+
 
 const express = require('express');
 const app = express();
@@ -126,6 +130,33 @@ exports.getMe = asyncHandler(async (req, res) => {
   console.log(req.user)
   res.status(200).json(req.user);
 });
+
+
+
+exports.getCountries = (req, res) => {
+  CountryModel.find({}, (err, data) => {
+    if (err) {
+      res.status(500).json({ 'msg': 'Database Error Occured!' });
+    } else {
+      res.status(200).json({ 'status': true, 'data': data });
+    }
+  });
+}
+
+
+exports.updateInsurance = (req, res) => {
+  console.log(req.user)
+  console.log(req.body.createdBy = req.user._id)
+
+  let Insurance = InsuranceModel(req.body)
+  Insurance.save((err, data) => {
+    if (err) {
+      res.status(500).json({ 'msg': 'Database Error Occured!' });
+    } else {
+      res.status(200).json({ 'status': true, 'msg': 'Insurance Created' });
+    }
+  });
+}
 
 
 exports.updateProfile = asyncHandler(async (req, res) => {

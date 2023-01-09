@@ -12,5 +12,10 @@ router.post("/generateOTP", user_controller.generateOTP);
 router.get("/me", protect, user_controller.getMe);
 
 
+router.get("/getCountries", user_controller.getCountries);
+router.post("/updateInsurance", protect, user_controller.updateInsurance);
+
+
+
 
 module.exports = router;
