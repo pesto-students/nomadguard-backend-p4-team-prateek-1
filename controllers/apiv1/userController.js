@@ -5,6 +5,9 @@ const User = require('../../models/userModel');
 const CountryModel = require('../../models/countryModel');
 const InsuranceModel = require('../../models/insuranceModel');
 
+const Stripe = require("stripe");
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+
 
 
 const express = require('express');
@@ -62,6 +65,11 @@ const generateToken = (id) => {
     expiresIn: '30d',
   });
 };
+
+
+
+
+
 
 
 // @desc    Authenticate a user
@@ -150,7 +158,7 @@ exports.getMyInsurance = (req, res) => {
     if (err) {
       res.status(500).json({ 'msg': 'Database Error Occured!' });
     } else {
-      res.status(200).json({ 'status': true, 'data': data });
+      res.status(200).json({ 'status': true, 'data': data.reverse() });
     }
   });
 }
@@ -161,16 +169,62 @@ exports.getMyInsurance = (req, res) => {
 exports.updateInsurance = (req, res) => {
   console.log(req.user)
   console.log(req.body.createdBy = req.user._id)
+  const user = req.user
 
   let Insurance = InsuranceModel(req.body)
   Insurance.save((err, data) => {
     if (err) {
       res.status(500).json({ 'msg': 'Database Error Occured!' });
     } else {
-      res.status(200).json({ 'status': true, 'msg': 'Insurance Created' });
+      // this.paymentTandom(req.user)
+      // res.status(200).json({ 'status': true, 'msg': 'Insurance Created' });
+
+      stripe.customers.create({
+        email: user.email,
+        // source: req.body.stripeToken,
+        name: user.firstName + user.lastName,
+        address: {
+          line1: user.address,
+          postal_code: user.zipCode,
+          city: user.city,
+          state: user.state,
+          country: user.country,
+        }
+      })
+        .then(async (customer) => {
+          const card_token = await stripe.tokens.create({
+            card: {
+              name: user.firstName + user.lastName,
+              number: 5555555555554444,
+              exp_month: 12,
+              exp_year: 2034,
+              cvc: 543
+            }
+          })
+          await stripe.customers.createSource(customer.id, { source: `${card_token.id}` })
+
+
+          return stripe.paymentIntents.create({
+            amount: 2500,     // Charging Rs 25
+            description: 'NomadGuard Insurance',
+            currency: 'USD',
+            customer: customer.id
+          });
+        })
+        .then((charge) => {
+          console.log('success')
+          res.status(200).json({ 'status': true, 'msg': 'Success' });  // res.send("Success")  // If no error occurs
+          // res.send("Success")  // If no error occurs
+        })
+        .catch((err) => {
+          console.log(err)
+         // res.status(500).json({ 'msg': err }); // If some error occurs
+           res.send(err)       // If some error occurs
+        });
     }
   });
 }
+
 
 // @description  PUT update user data
 // @route        POST /user/updateProfile
@@ -187,3 +241,7 @@ exports.updateProfile = asyncHandler(async (req, res) => {
     }
   });
 });
+
+
+
+
