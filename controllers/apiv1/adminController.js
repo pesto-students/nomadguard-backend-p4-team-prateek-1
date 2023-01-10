@@ -1,7 +1,10 @@
 const asyncHandler = require('express-async-handler');
 const User = require('../../models/userModel');
+const InsuranceModel = require('../../models/insuranceModel');
 
-
+// @description  GET all users
+// @route        GET /admin/allUsers
+// @access       Private
 exports.allUsers = asyncHandler(async (req, res) => {
   console.log('here')
   const userId = req.headers['user-id'];
@@ -14,3 +17,16 @@ exports.allUsers = asyncHandler(async (req, res) => {
     }
   });
 });
+
+// @description  GET all insurance
+// @route        GET /admin/getInsurances
+// @access       Private
+exports.getAllInsurance = (req, res) => {
+  InsuranceModel.find({}, (err, data) => {
+    if (err) {
+      res.status(500).json({ 'msg': 'Database Error Occured!' });
+    } else {
+      res.status(200).json({ 'status': true, 'data': data });
+    }
+  });
+}

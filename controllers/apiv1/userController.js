@@ -144,6 +144,20 @@ exports.getCountries = (req, res) => {
 }
 
 
+// get user insurances
+exports.getMyInsurance = (req, res) => {
+  InsuranceModel.find({ createdBy: req.user._id }, (err, data) => {
+    if (err) {
+      res.status(500).json({ 'msg': 'Database Error Occured!' });
+    } else {
+      res.status(200).json({ 'status': true, 'data': data });
+    }
+  });
+}
+
+// @description  POST purchase insurance
+// @route        POST /user/updateInsurance
+// @access       Private
 exports.updateInsurance = (req, res) => {
   console.log(req.user)
   console.log(req.body.createdBy = req.user._id)
@@ -158,7 +172,9 @@ exports.updateInsurance = (req, res) => {
   });
 }
 
-
+// @description  PUT update user data
+// @route        POST /user/updateProfile
+// @access       Private
 exports.updateProfile = asyncHandler(async (req, res) => {
 
   const userId = req.headers['user-id'];

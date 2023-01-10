@@ -13,6 +13,9 @@ router.get("/me", protect, user_controller.getMe);
 
 
 router.get("/getCountries", user_controller.getCountries);
+
+router.get("/getMyInsurance", protect, user_controller.getMyInsurance);
+
 router.post("/updateInsurance", protect, user_controller.updateInsurance);
 
 
