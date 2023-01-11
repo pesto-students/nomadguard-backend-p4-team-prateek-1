@@ -20,11 +20,31 @@ const insuranceSchema = mongoose.Schema(
     coverageDays: {
       type: Number,
     },
+
+    cardMonth: {
+      type: Number,
+    },
+
+    cardCvv: {
+      type: Number,
+    },
+    cardYear: {
+      type: Number,
+    },
+    cardNumber: {
+      type: Number,
+    },
+    cardHolderName: {
+      type: String,
+    },
     beneficiary: { type: String },
     countries: [{ type: String }],
     approvedStatus:  { type: Boolean, default: false },
     claimStatus:  { type: Boolean, default: false },
     purchasedOn: { type: Date }
+
+
+
   },
   {
     timestamps: true,
