@@ -3,6 +3,10 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../../models/userModel');
 const CountryModel = require('../../models/countryModel');
+const StateModel = require('../../models/stateModel');
+const CityModel = require('../../models/cityModel');
+
+
 const InsuranceModel = require('../../models/insuranceModel');
 
 const Stripe = require("stripe");
@@ -79,9 +83,12 @@ exports.loginUser = asyncHandler(async (req, res) => {
     res.status(201).json({
       _id: user.id,
       name: user.firstName + ' ' + user.lastName,
+      userRole: user.userRole,
       token: generateToken(user._id),
       password: user.password,
       email: user.email,
+      citizenship: user.citizenship,
+      address: user.address,
       homeCountry: user.homeCountry,
       city: user.city,
       state: user.state,
@@ -154,13 +161,13 @@ exports.getCountries = (req, res) => {
 // @route   GET /api/users/getStates
 // @access  Public
 exports.getStates = (req, res) => {
-  var country_id = req.params.id
+  var country_id = req.query.id
   StateModel.find({ countryId: country_id }, (err, data) => {
-      if (err) {
-          res.status(500).json({ 'msg': 'Database Error Occured!' });
-      } else {
-          res.status(200).json({ 'status': true, 'data': data });
-      }
+    if (err) {
+      res.status(500).json({ 'msg': 'Database Error Occured!' });
+    } else {
+      res.status(200).json({ 'status': true, 'data': data });
+    }
   });
 }
 
@@ -168,13 +175,13 @@ exports.getStates = (req, res) => {
 // @route   GET /api/users/getCities
 // @access  Public
 exports.getCities = (req, res) => {
-  var state_id = req.params.id
+  var state_id = req.query.id
   CityModel.find({ stateId: state_id }, (err, data) => {
-      if (err) {
-          res.status(500).json({ 'msg': 'Database Error Occured!' });
-      } else {
-          res.status(200).json({ 'status': true, 'data': data });
-      }
+    if (err) {
+      res.status(500).json({ 'msg': 'Database Error Occured!' });
+    } else {
+      res.status(200).json({ 'status': true, 'data': data });
+    }
   });
 }
 
@@ -197,7 +204,7 @@ exports.getMyInsurance = (req, res) => {
 // @access       Private
 exports.updateInsurance = (req, res) => {
   const user = req.user
-  
+
   // Insurance.save((err, data) => {
   //   if (err) {
   //     res.status(500).json({ 'msg': 'Database Error Occured!' });
@@ -260,10 +267,9 @@ exports.updateInsurance = (req, res) => {
 // @route        POST /user/updateProfile
 // @access       Private
 exports.updateProfile = asyncHandler(async (req, res) => {
-
   const userId = req.headers['user-id'];
   console.log(userId)
-  User.updateOne({ _id: userId }, { $set: req.body }, (errUpdate, resultUpdate) => {
+  User.updateOne({ _id: userId }, { $set: { firstName: req.body.firstName, lastName: req.body.lastName, address: req.body.address, zipCode: req.body.zipCode } }, (errUpdate, resultUpdate) => {
     if (errUpdate) {
       return res.status(500);
     } else {

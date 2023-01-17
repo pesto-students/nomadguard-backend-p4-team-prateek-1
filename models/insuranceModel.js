@@ -39,10 +39,10 @@ const insuranceSchema = mongoose.Schema(
     },
     beneficiary: { type: String },
     countries: [{ type: String }],
-    approvedStatus:  { type: Boolean, default: false },
-    claimStatus:  { type: Boolean, default: false },
-    purchasedOn: { type: Date }
-
+    approvedStatus: { type: Boolean, default: false },
+    claimStatus: { type: Boolean, default: false },
+    purchasedOn: { type: Date },
+    approvedOn: { type: Date }
 
 
   },
