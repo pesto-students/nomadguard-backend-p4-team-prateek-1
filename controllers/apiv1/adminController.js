@@ -10,9 +10,9 @@ exports.allUsers = asyncHandler(async (req, res) => {
   const userId = req.headers['user-id'];
   User.find({ userRole: { $ne: 'ADMIN' } }).exec((err, data) => {
     if (err) {
-      
+
       res.status(400);
-      throw new Error('Database Error');  
+      throw new Error('Database Error');
     } else {
       console.log(data)
       res.status(201).json(data.reverse());
@@ -24,7 +24,7 @@ exports.allUsers = asyncHandler(async (req, res) => {
 // @route        GET /admin/getInsurances
 // @access       Private
 exports.getAllInsurance = (req, res) => {
-  InsuranceModel.find({}, (err, data) => {
+  InsuranceModel.find({}).populate('createdBy').exec((err, data) => {
     if (err) {
       res.status(500).json({ 'msg': 'Database Error Occured!' });
     } else {
