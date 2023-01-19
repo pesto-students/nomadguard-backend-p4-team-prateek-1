@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: false }));
 // routes
 app.use('/api', require('./routes/routes'));
 
-app.use(express.static('https://silver-baklava-03b1a9.netlify.app'));
+app.use(express.static('https://nomadguard.netlify.app'));
 
 
 // Serve frontend
