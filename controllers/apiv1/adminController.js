@@ -18,6 +18,52 @@ exports.allUsers = asyncHandler(async (req, res) => {
   });
 });
 
+
+// @description  GET dash numbers
+// @route        GET /admin/getDashNumbers
+// @access       Private
+exports.getDashNumbers = asyncHandler(async (req, res) => {
+  const userId = req.headers['user-id'];
+  console.log('dashboard numebrs')
+  // 6 11 8 3
+  User.countDocuments({}, function (err, data) {
+    if (err) {
+      res.status(400);
+      throw new Error('Database Error');
+    } else {
+      InsuranceModel.countDocuments({}, function (err, data1) {
+        if (err) {
+          res.status(400);
+          throw new Error('Database Error');
+        } else {
+          InsuranceModel.countDocuments({ approvedStatus: true }, function (err, data2) {
+            if (err) {
+              res.status(400);
+              throw new Error('Database Error');
+            } else {
+              InsuranceModel.countDocuments({ approvedStatus: false }, function (err, data3) {
+                if (err) {
+                  res.status(400);
+                  throw new Error('Database Error');
+                } else {
+                  // console.log(data)
+                  // console.log(data1)
+                  // console.log(data2)
+                  // console.log(data3)
+                  res.status(200).json({ 'status': true, 'data': { 'totalUsers': data -1 , 'totalInsurance': data1, 'approved': data2, 'pending': data3 } });
+                }
+              })
+
+            }
+          })
+
+        }
+      })
+      //res.status(201).json(data.reverse());
+    }
+  })
+});
+
 // @description  GET all insured Users
 // @route        GET /admin/getInsuredUsers
 // @access       Private
@@ -31,7 +77,7 @@ exports.getInsuredUsers = asyncHandler(async (req, res) => {
     } else {
 
       const unique = new Set()
-      for( const obj of data){
+      for (const obj of data) {
         unique.add(obj.createdBy)
       }
       res.status(201).json(Array.from(unique));

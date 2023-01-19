@@ -7,7 +7,7 @@ router.get('/getInsuranceList', admin_controller.getAllInsurance);
 router.post("/approveInsurance", admin_controller.approveInsurance);
 router.get('/getInsuredUsers', admin_controller.getInsuredUsers);
 
-
+router.get('/getDashNumbers', admin_controller.getDashNumbers);
 
 
 module.exports = router;
