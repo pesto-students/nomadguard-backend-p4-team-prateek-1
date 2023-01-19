@@ -6,7 +6,6 @@ const InsuranceModel = require('../../models/insuranceModel');
 // @route        GET /admin/allUsers
 // @access       Private
 exports.allUsers = asyncHandler(async (req, res) => {
-  console.log('here')
   const userId = req.headers['user-id'];
   User.find({ userRole: { $ne: 'ADMIN' } }).exec((err, data) => {
     if (err) {
@@ -14,11 +13,33 @@ exports.allUsers = asyncHandler(async (req, res) => {
       res.status(400);
       throw new Error('Database Error');
     } else {
-      console.log(data)
       res.status(201).json(data.reverse());
     }
   });
 });
+
+// @description  GET all insured Users
+// @route        GET /admin/getInsuredUsers
+// @access       Private
+exports.getInsuredUsers = asyncHandler(async (req, res) => {
+  console.log('hereee')
+  const userId = req.headers['user-id'];
+  InsuranceModel.find({}).populate('createdBy').exec((err, data) => {
+    if (err) {
+      res.status(400);
+      throw new Error('Database Error');
+    } else {
+
+      const unique = new Set()
+      for( const obj of data){
+        unique.add(obj.createdBy)
+      }
+      res.status(201).json(Array.from(unique));
+    }
+  })
+});
+
+
 
 // @description  GET all insurance
 // @route        GET /admin/getInsurances

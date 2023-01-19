@@ -10,6 +10,7 @@ router.post("/updateProfile", user_controller.updateProfile);
 
 router.post("/generateOTP", user_controller.generateOTP);
 router.get("/me", protect, user_controller.getMe);
+router.post("/changePassword", user_controller.changePassword);
 
 
 router.get("/getCountries", user_controller.getCountries);

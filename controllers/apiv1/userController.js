@@ -281,3 +281,36 @@ exports.updateProfile = asyncHandler(async (req, res) => {
 
 
 
+exports.changePassword = asyncHandler(async (req, res) => {
+
+  const userId = req.headers['user-id'];
+  console.log(userId)
+
+  const user = await User.findOne({ _id: userId });
+
+
+  if (user && (await bcrypt.compare(req.body.oldPassword, user.password))) {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.newPassword, salt);
+
+    req.body.password = hashedPassword;
+
+    User.updateOne({ _id: userId }, { $set: { password: req.body.password, passChanged: true } }, async (errUpdate, resultUpdate) => {
+      if (errUpdate) {
+        return res.status(500);
+      } else {
+        // const userHistory = await UserHistory.create({
+        //   date: new Date(),
+        //   updatedBy: userId,
+        //   category: "Password changed",
+        //   action: "User password has been changed",
+        // })
+        res.status(200).json({ 'status': true, 'msg': 'Success' });
+      }
+    });
+  } else {
+    res.status(400);
+    throw new Error('Invalid credentials');
+    // throw new Error("Password didn't match.");
+  }
+});
