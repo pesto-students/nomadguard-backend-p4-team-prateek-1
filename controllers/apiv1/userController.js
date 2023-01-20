@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../../models/userModel');
+const Logging = require('../../models/loggingModel');
 const CountryModel = require('../../models/countryModel');
 const StateModel = require('../../models/stateModel');
 const CityModel = require('../../models/cityModel');
@@ -80,6 +81,13 @@ exports.loginUser = asyncHandler(async (req, res) => {
   console.log(user)
 
   if (user && (await bcrypt.compare(password, user.password))) {
+
+    // frontend logging
+    const logging = await Logging.create({
+      userId: user.id,
+      action: 'LOGIN'
+    })
+
     res.status(201).json({
       _id: user.id,
       name: user.firstName + ' ' + user.lastName,
