@@ -7,12 +7,7 @@ const connectDB = require('./config/db');
 const path = require('path');
 const app = express();
 
-// cron
-// console.log("devvvvv")
-// const cron_jobs = require("./cron_job");
-// cron_jobs.startJobs();
 
-//database connect
 connectDB();
 
 //middlewares
@@ -25,7 +20,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/api', require('./routes/routes'));
 
 // Serve frontend
- app.use(express.static('https://nomadguard.netlify.app'));
-
+app.use(express.static('https://nomadguard.netlify.app'));
 
 app.listen(port, () => console.log('BackEnd Server Is On=', port));
