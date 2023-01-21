@@ -23,6 +23,9 @@ app.set('view engine', 'ejs');
 require('dotenv').config();
 const mail = require('../../helpers/mail');
 
+// sendGrid 
+const sendGridMail = require('@sendgrid/mail');
+sendGridMail.setApiKey(process.env.SENDGRID_API_KEY);
 // @description  Register User
 // @route        POST /user/register
 // @access       Private
@@ -123,16 +126,34 @@ exports.generateOTP = asyncHandler(async (req, res) => {
   User.findOneAndUpdate({ email: req.body.email }, { $set: { otp: OTP } }, async (err, data) => {
     if (err) {
     } else {
-      ejs.renderFile(path.join(__dirname, './../../emails/', "otp.ejs"), { email_data: req.body }, (err, data) => {
+      ejs.renderFile(path.join(__dirname, './../../emails/', "otp.ejs"), { email_data: req.body }, async (err, data) => {
         if (err) {
           console.log(err);
         } else {
+          const body = 'This is a test email using SendGrid from Node.js';
           email_params = {
+            // to: req.body.email,
+            // from: '"NomadGUARD" <ajmanisameer@gmail.com>',
+            // subject: 'Here is your OTP to reset your password',
+            // text: data['html'],
+            // html: data['html']
             to: req.body.email,
-            subject: 'Here is your OTP to reset your password',
-            html: data
+            from: 'ajmanisameer@gmail.com',
+            subject: 'Test email with Node.js and SendGrid',
+            text: body,
+            html: `<strong>${body}</strong>`,
           }
-          mail.send(email_params);
+          // console.log(email_params.html)
+          try {
+            await sendGridMail.send(email_params);
+            console.log('Test email sent successfully');
+          } catch (error) {
+            console.error('Error sending test email');
+            console.error(error);
+            if (error.response) {
+              console.error(error.response.body)
+            }
+          }
         }
       });
       return res.status(200).json(data);

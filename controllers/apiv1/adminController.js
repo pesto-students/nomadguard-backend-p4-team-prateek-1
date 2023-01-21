@@ -46,10 +46,7 @@ exports.getDashNumbers = asyncHandler(async (req, res) => {
                   res.status(400);
                   throw new Error('Database Error');
                 } else {
-                  // console.log(data)
-                  // console.log(data1)
-                  // console.log(data2)
-                  // console.log(data3)
+                  res.set('Cache-Control', 'public, max-age=60'); 
                   res.status(200).json({ 'status': true, 'data': { 'totalUsers': data -1 , 'totalInsurance': data1, 'approved': data2, 'pending': data3 } });
                 }
               })
