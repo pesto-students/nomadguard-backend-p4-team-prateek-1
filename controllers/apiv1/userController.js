@@ -81,16 +81,12 @@ exports.loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   // Check for user email
   const user = await User.findOne({ email });
-  console.log(user)
-
   if (user && (await bcrypt.compare(password, user.password))) {
-
     // frontend logging
-    const logging = await Logging.create({
-      userId: user.id,
-      action: 'LOGIN'
-    })
-
+    // const logging = await Logging.create({
+    //   userId: user.id,
+    //   action: 'LOGIN'
+    // })
     res.status(201).json({
       _id: user.id,
       name: user.firstName + ' ' + user.lastName,
