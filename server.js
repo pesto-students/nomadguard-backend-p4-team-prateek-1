@@ -20,6 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/api', require('./routes/routes'));
 
 // Serve frontend
+//  "SERVER_URL": "https://nomadguard.onrender.com",
 app.use(express.static('https://nomadguard.netlify.app'));
 
 app.listen(port, () => console.log('BackEnd Server Is On=', port));
